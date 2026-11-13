@@ -41,9 +41,10 @@ function CategoryCard({ category, index }: CategoryCardProps) {
   return (
     // Animation 2: on hover/focus the border turns blue (always) and, only when
     // motion is allowed, the card lifts 2px and the arrow slides 4px (150ms).
+    // Animation 3: while pressed the border turns blue and, motion allowed, the card scales to 99%.
     <SmartLink
       href={href}
-      className="group flex w-full flex-col justify-between rounded-2xl border border-line bg-white p-6 transition-[border-color,translate] duration-150 ease-out hover:border-primary focus-visible:border-primary motion-safe:hover:-translate-y-0.5 motion-safe:focus-visible:-translate-y-0.5 lg:p-7"
+      className="group flex w-full flex-col justify-between rounded-2xl border border-line bg-white p-6 transition-[border-color,translate,scale] duration-150 ease-out hover:border-primary focus-visible:border-primary active:border-primary active:duration-100 motion-safe:active:scale-[.99] motion-safe:hover:-translate-y-0.5 motion-safe:focus-visible:-translate-y-0.5 lg:p-7"
     >
       <div>
         <span className="mt-0.5 inline-block rounded-md bg-primary-soft px-2 py-1 text-overline font-semibold text-primary">
