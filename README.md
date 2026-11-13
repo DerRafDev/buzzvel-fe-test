@@ -2,6 +2,12 @@
 
 Landing page for the Buzzvel Front-End Engineer challenge ("Luma", from the Figma file *Buzzvel FE - Test 2026*), built with Next.js (App Router), TypeScript, Tailwind CSS and ESLint.
 
+## Live Demo
+
+Hosted on **GitHub Pages** as a static export: [View the live demo](https://derrafdev.github.io/buzzvel-fe-test/).
+
+> **Deployment pending.** The Pages workflow runs on the first push to `main` that includes it, so until then this is the expected URL and it may still show the previous content. The differences between the static export and the regular build are listed in [GitHub Pages (static export)](#github-pages-static-export).
+
 ## Requirements
 
 - [Bun](https://bun.sh) **1.3.14** — the same version is pinned in `package.json` (`packageManager`) and used by CI.
@@ -31,6 +37,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `bun run typecheck` | Generate Next.js route types and run `tsc --noEmit` |
 | `bun run test`      | Run the unit tests once (Vitest + Testing Library)  |
 | `bun run build`     | Create a production build                           |
+| `bun run build:pages` | Create the GitHub Pages static export in `out/` (served under `/buzzvel-fe-test/`) |
 | `bun run start`     | Serve the production build                          |
 
 ## Validation
@@ -48,6 +55,47 @@ bun run build
 ## Continuous integration
 
 `.github/workflows/ci.yml` runs on pull requests and on pushes to `main`. It installs Bun 1.3.14, installs dependencies with `--frozen-lockfile`, and runs lint, typecheck, tests and the production build.
+
+`.github/workflows/pages.yml` deploys the site on pushes to `main` and on manual runs (*Actions → Deploy to GitHub Pages → Run workflow*). With the same Bun setup, it runs lint, typecheck and tests, then `bun run build:pages`. It then publishes `out/` with the official Pages actions (`configure-pages`, `upload-pages-artifact`, `deploy-pages`) to the `github-pages` environment. The repository's Pages source must be set to **GitHub Actions**.
+
+## GitHub Pages (static export)
+
+`bun run build:pages` sets `GITHUB_PAGES=true`, which switches `next.config.ts` to a static export. `bun run build` is unchanged.
+
+| Option | Regular build | Pages export | Why |
+| --- | --- | --- | --- |
+| `output` | default (server) | `"export"` → `out/index.html`, `out/404.html` | GitHub Pages only serves files |
+| `basePath` | none | `/buzzvel-fe-test` | Project site URL. `next/link`, `next/image` static imports, fonts, CSS, JS and the favicon all get the prefix |
+| `trailingSlash` | `false` | `true` | Links render as `/buzzvel-fe-test/`, avoiding the redirect GitHub Pages sends for `/buzzvel-fe-test` |
+| `cacheComponents`, `partialPrefetching` | `true` | `false` | Next.js rejects the export with "PPR cannot be enabled in export mode". The app uses no `use cache` or request-time APIs, so the page is fully static in both modes |
+| `images.unoptimized` | `false` | `true` | No server runs the image optimizer |
+
+To preview the export locally under the same path:
+
+```bash
+bun run build:pages
+mkdir -p /tmp/pages && rm -rf /tmp/pages/buzzvel-fe-test && cp -R out /tmp/pages/buzzvel-fe-test
+python3 -m http.server 3000 -d /tmp/pages # then open http://localhost:3000/buzzvel-fe-test/
+```
+
+A generic static server does not reproduce GitHub Pages' 404 handling. It was verified with a small server that, like Pages, answers unknown paths with `404.html` and status 404.
+
+**Behavior and loading differences**
+
+- **Images.** `next/image` serves the imported JPEG files as they are, so there is no `srcset` and no WebP/AVIF conversion. The browser loads one file per image at every width. Lazy loading, the hero preload and the hero's blur placeholder still work. To keep that cheap, the collage photos were downscaled at the source (see [Images](#images)). The hero photo stays at 900×1100 (125 KB). That is below 2× its 500px desktop box, so a smaller file would look soft on high-density screens. All 20 images on the page total about 1 MB in the export.
+- **Out-of-scope links** (`/login/`, `/courses/…`, `/terms/`…) have no generated page. GitHub Pages answers them with `out/404.html` and status 404, which renders the same "This page isn't part of this demo" page as the regular build. Its logo and "Back to home" link point to `/buzzvel-fe-test/`. Query strings such as `/courses/?category=business` get the same page.
+- **Prefetching.** Without Partial Prefetching, the link to `/` uses the default prefetch. Out-of-scope links still have prefetching disabled.
+- **No server features.** There are no response headers, redirects or server-rendered 404 status from Next.js, so status codes come from GitHub Pages. The contact form was already client-only (simulated submit), so it behaves the same.
+
+**Verified locally** (Chromium 151, Playwright) with the export served under `/buzzvel-fe-test/`:
+
+- CSS, both fonts, the favicon and all 20 images load. The page has no console errors and no failed requests.
+- Header and footer anchors move focus to their sections, and opening `/#how-it-works` directly scrolls to it.
+- The logo returns to the landing page. "Log in" opens the 404 page, and its logo and "Back to home" link return to the landing page. A direct visit to a missing URL gets status 404.
+- At 402px with touch, the mobile menu opens, closes on Escape, and closes when a link is followed.
+- The contact form shows its errors, moves focus to the first invalid field, shows "Sending…" and then the success message, and clears its fields.
+
+Full-page screenshots of the export and of `bun run build` + `bun run start` have the same layout: page heights are 5695px at 1280px and 7801px at 402px. Pixel differences are limited to the photos, which the regular build serves resized as WebP/AVIF and the export serves as the source JPEGs.
 
 ## Project structure
 
@@ -111,6 +159,7 @@ After these changes an automated audit of every visible text node (99 at mobile 
 | Hero · mobile | Photo (900×1100) stretched to fill a 346×380 box (Figma "Stretch") | Same box, `object-cover` centered: about 21px is cropped from the top and from the bottom, nothing is distorted | Stretching distorts the photo by about 11% horizontally. Verified at 402px |
 | Hero · desktop | Photo in a 500×520 box ("Fill") | Same | — |
 | People · all | Photos use "Fill" (centered) | `object-cover` centered | Equivalent |
+| People · all | Photo exports up to 1880×1255 (1.4 MB for the ten photos) | Same photos downscaled to 480px tall, JPEG quality 70 (550 KB in total). Crop and composition are unchanged | The largest box is 138×207 CSS px (desktop) and 94×129 (mobile), so 480px still covers 2.3× and 3.7× density. This matters for the GitHub Pages export, which has no image optimizer. No visible difference at the rendered sizes |
 | Final CTA · desktop | iconoir "cash" glyph drawn with masked strokes | The two side shapes are plain filled paths | Same silhouette without SVG masks |
 
 ### Layout and spacing
