@@ -97,3 +97,49 @@
     outline-color: var(--color-white);
   }
 }
+
+/*
+ * Animation 4: the How it works connector draws on scroll, as progressive
+ * enhancement. The line is complete by default; it only animates where
+ * scroll-driven animations are supported and motion is allowed.
+ */
+@keyframes connector-draw-x {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes connector-draw-y {
+  from {
+    scale: 1 0;
+  }
+}
+
+@layer components {
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .connector-draw-x,
+      .connector-draw-y {
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: view();
+      }
+
+      /* Complete before the line reaches the middle of the viewport, so opening
+         /#how-it-works directly (line ~324px from the top) shows it drawn. */
+      .connector-draw-x {
+        transform-origin: left;
+        animation-name: connector-draw-x;
+        animation-range: entry 30% cover 40%;
+      }
+
+      /* Each 50px mobile segment draws while it enters the viewport, so any
+         segment that is fully visible (e.g. on a direct load) is complete. */
+      .connector-draw-y {
+        transform-origin: top;
+        animation-name: connector-draw-y;
+        animation-range: entry;
+      }
+    }
+  }
+}

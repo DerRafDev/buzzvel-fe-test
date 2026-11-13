@@ -17,11 +17,12 @@ export function HowItWorks() {
           {/*
             Horizontal connector (md+): from the centre of the first icon to the
             centre of the third, behind the opaque icon tiles. Width = two columns
-            plus two gaps of the 3-column grid.
+            plus two gaps of the 3-column grid. Animation 4 (connector-draw-x):
+            draws on scroll where supported; otherwise it is static and complete.
           */}
           <div
             aria-hidden="true"
-            className="absolute top-7 left-7 hidden h-px w-[calc((100%-4rem)*2/3+4rem)] bg-line md:block lg:w-[calc((100%-10rem)*2/3+10rem)]"
+            className="connector-draw-x absolute top-7 left-7 hidden h-px w-[calc((100%-4rem)*2/3+4rem)] bg-line md:block lg:w-[calc((100%-10rem)*2/3+10rem)]"
           />
           <ol className="relative grid gap-0 md:grid-cols-3 md:gap-8 lg:gap-20">
             {steps.map((step, index) => (
@@ -50,7 +51,7 @@ function StepItem({ step, index, isLast }: StepItemProps) {
       </h3>
       <p className="mt-3 text-small text-muted lg:text-body">{step.description}</p>
       {isLast ? null : (
-        <span aria-hidden="true" className="absolute bottom-0 left-7 h-[50px] w-px bg-line md:hidden" />
+        <span aria-hidden="true" className="connector-draw-y absolute bottom-0 left-7 h-[50px] w-px bg-line md:hidden" />
       )}
     </li>
   );

@@ -161,10 +161,12 @@ The Figma file has no prototype interactions and no hover, focus, open, error, l
 
 **Animations** (added after the visual and accessibility review)
 
-1. **Mobile menu:** the panel fades in and slides down 8px over 200ms when it opens (`@starting-style`); closing is instant.
-2. **Category cards and arrow links:** on hover or focus the card lifts 2px and the arrow slides 4px over 150ms; the border color change is immediate.
+1. **Mobile menu.** Trigger: opening the menu. Effect: the panel fades in and slides down 8px over 200ms (`@starting-style`); closing is instant. Fallback: with reduced motion, or without `@starting-style` support, the panel appears instantly.
+2. **Category cards and arrow links.** Trigger: hover or keyboard focus. Effect: the card lifts 2px and the arrow slides 4px over 150ms, and the border fades to blue over the same 150ms. Fallback: with reduced motion only the border color changes.
+3. **Press state.** Trigger: pressing a button, a header action or a category card (touch, mouse, or Space on the submit button). Effect: while pressed, the control scales to 98% (cards 99%) and takes its hover color (100ms). Touch devices never get hover styles, so this is their visual response to a tap. The submit button does not react while it reads "Sending…". The browser's native tap highlight is kept. Fallback: with reduced motion only the color changes.
+4. **How it works connector.** Trigger: scrolling the section into view. Effect: the connector line draws from step 1 towards step 3 — the horizontal line from 768px, each vertical segment below that — tied to scroll position with `animation-timeline: view()`. The horizontal line is complete before it reaches the middle of the viewport, each vertical segment as soon as it is fully in view, so opening `/#how-it-works` directly shows the lines in view complete. Fallback: browsers without scroll-driven animations (e.g. Firefox today) and reduced motion show the static, complete line, as in the frames.
 
-With `prefers-reduced-motion: reduce`, neither animation moves anything: the panel appears instantly and only the border color changes on the cards. Verified by emulating the media feature in Chrome.
+Tested in Chromium 151 (Playwright, 402px with touch emulation and 1280px, with and without reduced motion) and in Safari on the iOS 27 simulator (connector only; the press state was not tested on iOS). Desktop Safari, Firefox and real devices were not tested. The rest state of the page is pixel-identical to the version without animations 3 and 4 in Chromium at 402px and 1280px, apart from sub-pixel anti-aliasing differences caused by the animated connector being composited on its own layer.
 
 ## Link destinations
 

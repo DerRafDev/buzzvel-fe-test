@@ -117,7 +117,8 @@ export function ContactForm({ submitDelayMs = 600 }: ContactFormProps) {
           type="submit"
           // aria-disabled instead of disabled keeps focus on the button while sending.
           aria-disabled={sending}
-          className="mt-6 w-full rounded-lg bg-primary px-7 py-3.5 text-small font-bold text-white transition-[color,background-color,border-color] hover:bg-primary-strong aria-disabled:cursor-progress aria-disabled:opacity-80"
+          // Press state (animation 3) only while not sending, so a busy button does not react.
+          className="mt-6 w-full rounded-lg bg-primary px-7 py-3.5 text-small font-bold text-white transition-[color,background-color,border-color,scale] hover:bg-primary-strong aria-[disabled=false]:active:bg-primary-strong aria-[disabled=false]:active:duration-100 aria-[disabled=false]:active:ease-out motion-safe:aria-[disabled=false]:active:scale-[.98] aria-disabled:cursor-progress aria-disabled:opacity-80"
         >
           {sending ? "Sending…" : "Send message"}
         </button>

@@ -36,13 +36,13 @@ export function SiteHeader() {
         <div className="hidden items-center gap-2 lg:flex">
           <SmartLink
             href={headerActions.login.href}
-            className="rounded-lg px-4 py-2.5 text-small text-muted transition-[color,background-color,border-color] hover:text-ink"
+            className="rounded-lg px-4 py-2.5 text-small text-muted transition-[color,background-color,border-color,scale] hover:text-ink active:text-ink active:duration-100 active:ease-out motion-safe:active:scale-[.98]"
           >
             {headerActions.login.label}
           </SmartLink>
           <SmartLink
             href={headerActions.start.href}
-            className="rounded-lg bg-primary px-5 py-2.5 text-small font-bold text-white transition-[color,background-color,border-color] hover:bg-primary-strong"
+            className="rounded-lg bg-primary px-5 py-2.5 text-small font-bold text-white transition-[color,background-color,border-color,scale] hover:bg-primary-strong active:bg-primary-strong active:duration-100 active:ease-out motion-safe:active:scale-[.98]"
           >
             {headerActions.start.label}
           </SmartLink>
