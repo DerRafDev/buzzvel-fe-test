@@ -85,6 +85,7 @@ A generic static server does not reproduce GitHub Pages' 404 handling. It was ve
 - **Images.** `next/image` serves the imported JPEG files as they are, so there is no `srcset` and no WebP/AVIF conversion. The browser loads one file per image at every width. Lazy loading, the hero preload and the hero's blur placeholder still work. To keep that cheap, the collage photos were downscaled at the source (see [Images](#images)). The hero photo stays at 900×1100 (125 KB). That is below 2× its 500px desktop box, so a smaller file would look soft on high-density screens. All 20 images on the page total about 1 MB in the export.
 - **Out-of-scope links** (`/login/`, `/courses/…`, `/terms/`…) have no generated page. GitHub Pages answers them with `out/404.html` and status 404, which renders the same "This page isn't part of this demo" page as the regular build. Its logo and "Back to home" link point to `/buzzvel-fe-test/`. Query strings such as `/courses/?category=business` get the same page.
 - **Prefetching.** Without Partial Prefetching, the link to `/` uses the default prefetch. Out-of-scope links still have prefetching disabled.
+- **`robots.txt` and `llms.txt`** are published at `/buzzvel-fe-test/robots.txt` and `/buzzvel-fe-test/llms.txt`. Crawlers only read these files at the root of the domain (`derrafdev.github.io/robots.txt`, which belongs to the user site), so on a project site they serve as reference only. On a host at the domain root they apply as usual.
 - **No server features.** There are no response headers, redirects or server-rendered 404 status from Next.js, so status codes come from GitHub Pages. The contact form was already client-only (simulated submit), so it behaves the same.
 
 **Verified locally** (Chromium 151, Playwright) with the export served under `/buzzvel-fe-test/`:
@@ -105,6 +106,10 @@ app/
   page.tsx                   # Route "/": header, the 8 main sections, footer
   not-found.tsx              # Shared 404 for every out-of-scope destination
   globals.css                # Tailwind entry point and design tokens (@theme)
+  icon.svg · icon.ico        # Favicon: the "l." of the logo on the brand blue (SVG + 16/32/48px ICO)
+  apple-icon.png             # 180×180 home-screen icon (full-bleed, iOS applies the mask)
+  opengraph-image.jpg        # 1200×630 social preview (+ .alt.txt); also used for X/Twitter
+  robots.txt                 # Allows every crawler
   _assets/images/            # Images exported from Figma (static imports)
   _data/content.ts           # Typed local content: nav, categories, steps, stats, collage, footer
   _components/
@@ -112,7 +117,11 @@ app/
     layout/                  # SiteHeader, MobileMenu (client), SiteFooter
     sections/                # Hero, Categories, FeaturedCourse, HowItWorks, Testimonial,
                              # People, Contact + ContactForm (client) + its test, FinalCta
+public/
+  llms.txt                   # Plain-language summary of the site for LLMs (llmstxt.org format)
 ```
+
+**Metadata.** The Open Graph and X/Twitter tags (`summary_large_image`) point to an absolute image URL built from `metadataBase`. The GitHub Pages export uses `https://derrafdev.github.io`; Next.js adds the `/buzzvel-fe-test` base path itself. Other builds read `SITE_URL` and fall back to `http://localhost:3000`. The favicon is `icon.ico` rather than `favicon.ico`: in the static export, `favicon.ico` dropped out of the landing page's `<head>` when `icon.svg` was also present, while `icon.ico` is linked on every page in both builds.
 
 Only two components are Client Components: `MobileMenu` (open state, Escape, closing at the desktop breakpoint) and `ContactForm` (validation, focus management, simulated submit). Everything else is server-rendered and prerendered as static content.
 
