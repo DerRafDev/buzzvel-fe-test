@@ -1,17 +1,99 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Design tokens extracted from the Figma file "Buzzvel FE - Test 2026".
+ * Breakpoints follow Tailwind defaults: base = mobile frame (402px),
+ * md (768px) = tablet adaptation, lg (1024px) = desktop frame (1280px).
+ */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #3157f6;
+  --color-primary-strong: #2445d4;
+  --color-primary-soft: #e2e8ff;
+  --color-ink: #171b2c;
+  --color-muted: #656770;
+  --color-muted-2: #6d7384;
+  --color-footer-muted: #9e9faa;
+  --color-on-dark: #e7e7ec;
+  --color-cream: #f9f8f3;
+  --color-line: #dbdfeb;
+  --color-yellow: #ffee7e;
+  --color-yellow-strong: #ffe54d;
+  --color-butter: #fff1c2;
+  --color-peach: #ffcb9f;
+  --color-orange: #ff704d;
+  --color-mustard: #e9d659;
+  --color-error: #c62828;
+
+  /* Display type: Plus Jakarta Sans 800, tracking -2.5% on every size in the file. */
+  --text-display-1: 4rem; /* 64/70 — desktop H1 and stats */
+  --text-display-1--line-height: 4.375rem;
+  --text-display-1--letter-spacing: -0.025em;
+  --text-display-2: 3.5rem; /* 56/64 — desktop final CTA */
+  --text-display-2--line-height: 4rem;
+  --text-display-2--letter-spacing: -0.025em;
+  --text-display-3: 3rem; /* 48/56 — desktop H2 */
+  --text-display-3--line-height: 3.5rem;
+  --text-display-3--letter-spacing: -0.025em;
+  --text-display-4: 2.5rem; /* 40/44 — mobile H1 and stats */
+  --text-display-4--line-height: 2.75rem;
+  --text-display-4--letter-spacing: -0.025em;
+  --text-display-5: 2.25rem; /* 36/40 — mobile final CTA */
+  --text-display-5--line-height: 2.5rem;
+  --text-display-5--letter-spacing: -0.025em;
+  --text-display-6: 2rem; /* 32/36 — mobile H2 */
+  --text-display-6--line-height: 2.25rem;
+  --text-display-6--letter-spacing: -0.025em;
+
+  --text-quote: 1.875rem; /* 30/44 — desktop testimonial */
+  --text-quote--line-height: 2.75rem;
+  --text-quote--letter-spacing: -0.025em;
+  --text-title: 1.25rem; /* 20/32 — H3 desktop */
+  --text-title--line-height: 2rem;
+  --text-title-sm: 1.25rem; /* 20/28 — H3 mobile */
+  --text-title-sm--line-height: 1.75rem;
+  --text-lead: 1.125rem; /* 18/28 */
+  --text-lead--line-height: 1.75rem;
+  --text-body: 1rem; /* 16/28 */
+  --text-body--line-height: 1.75rem;
+  --text-body-sm: 1rem; /* 16/26 — mobile lead */
+  --text-body-sm--line-height: 1.625rem;
+  --text-small: 0.875rem; /* 14/24 */
+  --text-small--line-height: 1.5rem;
+  --text-caption: 0.8125rem; /* 13/19.5 */
+  --text-caption--line-height: 1.21875rem;
+  --text-overline: 0.75rem; /* 12/16, uppercase, +0.12em */
+  --text-overline--line-height: 1rem;
+  --text-overline--letter-spacing: 0.12em;
+
+  --shadow-float: 0 4px 24px rgb(0 0 0 / 0.1);
+  --shadow-form: 0 12px 32px rgb(23 27 44 / 0.04);
+  --shadow-photo: 0 0 3.2px rgb(0 0 0 / 0.07), 0 3.2px 4.8px -0.8px rgb(0 0 0 / 0.1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@layer base {
+  html {
+    background: var(--color-cream);
+  }
+
+  body {
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  /* One focus style for every interactive element; dark sections override the color. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, sans-serif;
+/* Light focus ring for controls placed on the blue and dark backgrounds. */
+@utility focus-ring-light {
+  &:focus-visible {
+    outline-color: var(--color-white);
+  }
 }
