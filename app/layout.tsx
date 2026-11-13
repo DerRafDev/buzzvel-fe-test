@@ -13,7 +13,16 @@ const jakarta = Plus_Jakarta_Sans({
 const description =
   "Practical courses taught by people who do the work every day. Learn design, technology, business and more — one focused lesson at a time.";
 
+// Origin used to turn the Open Graph image into an absolute URL (Next.js adds
+// the basePath itself). The GitHub Pages export uses the public site; other
+// builds read SITE_URL and fall back to the local server.
+const siteUrl =
+  process.env.GITHUB_PAGES === "true"
+    ? "https://derrafdev.github.io"
+    : (process.env.SITE_URL ?? "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Luma — Practical courses taught by people who do the work",
   description,
   openGraph: {

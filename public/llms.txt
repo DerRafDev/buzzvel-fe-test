@@ -1,0 +1,18 @@
+# Luma
+
+> Luma is a fictional online learning platform with practical courses taught by people who do the work every day. This site is a single landing page built for the Buzzvel Front-End Engineer challenge with Next.js, TypeScript and Tailwind CSS. It is a demo: there are no real courses, accounts or backend.
+
+The whole page is static. Its content lives in one page, organised in sections that can be linked by anchor. Links to other routes (log in, sign up, course and category pages, careers, help, terms, privacy) are intentionally not built. They all show a "This page isn't part of this demo" page. The contact form validates the input and simulates sending, but it does not send anything.
+
+## Page sections
+
+- [Hero](https://derrafdev.github.io/buzzvel-fe-test/): "Build skills that actually move you forward." Practical courses, 120+ expert-led courses, 4.9 average rating
+- [Categories](https://derrafdev.github.io/buzzvel-fe-test/#categories): Product Design, Technology, Business and Creative
+- [Featured course](https://derrafdev.github.io/buzzvel-fe-test/#featured): "Designing products people understand" with Maya Chen, Senior Product Designer (8 lessons, 2h 40min, intermediate)
+- [How it works](https://derrafdev.github.io/buzzvel-fe-test/#how-it-works): choose your focus, learn from experience, put it into practice
+- [People](https://derrafdev.github.io/buzzvel-fe-test/#people): international students and teachers
+- [Contact](https://derrafdev.github.io/buzzvel-fe-test/#contact): contact@luma.com, replies within 24 hours on business days (demo form)
+
+## Project
+
+- [Source code and README](https://github.com/DerRafDev/buzzvel-fe-test): setup, scripts, design deviations from the Figma file, interaction decisions and link destinations
